@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Termos de Uso — Alerta de Convocação" };
+export const metadata: Metadata = { title: "Termos de Uso — Oxty Inside" };
 
 export default function TermosPage() {
   return (
@@ -8,7 +8,7 @@ export default function TermosPage() {
       <h1 className="text-3xl font-bold">Termos de Uso</h1>
       <div className="mt-6 space-y-4 text-gray-700 leading-relaxed">
         <p>
-          O Alerta de Convocação monitora publicações em Diários Oficiais municipais e envia
+          O Oxty Inside monitora publicações em Diários Oficiais municipais e envia
           alertas quando termos relacionados ao seu nome aparecem. É uma ferramenta de leitura
           automatizada e notificação.
         </p>

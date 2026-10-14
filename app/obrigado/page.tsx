@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Tudo certo — Alerta de Convocação" };
+export const metadata: Metadata = { title: "Tudo certo — Oxty Inside" };
 
 export default function ObrigadoPage() {
   return (
     <main className="mx-auto max-w-2xl px-4 py-20 text-center">
-      <p className="text-5xl">🎉</p>
+      <svg className="mx-auto h-16 w-16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="11" fill="var(--color-ok)" opacity="0.12" />
+        <path d="M7 12.5l3.5 3.5L17 8.5" stroke="var(--color-ok)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
       <h1 className="mt-4 text-3xl font-bold">Tudo certo por aqui!</h1>
       <p className="mt-4 text-lg text-gray-700">
         Seu lugar na lista está confirmado. Quando o produto abrir, você fica sabendo primeiro.

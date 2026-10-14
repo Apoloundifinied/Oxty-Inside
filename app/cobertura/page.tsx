@@ -6,8 +6,8 @@ import type { CoverageCity } from "@/lib/domains";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "O que cobrimos — Alerta de Convocação",
-  description: "Lista completa e pesquisável dos municípios monitorados pelo Alerta de Convocação.",
+  title: "O que cobrimos — Oxty Inside",
+  description: "Lista completa dos municípios monitorados pelo Oxty Inside.",
 };
 
 export const dynamic = "force-dynamic";
@@ -23,7 +23,9 @@ export default async function CoberturaPage() {
       .select("territory_id, name, uf, level")
       .order("name")
       .limit(6000);
-    cities = (data ?? []) as CoverageCity[];
+    // Tabela guarda as 5.570 cidades; a listagem publica mostra so as que
+    // de fato tem fonte ativa (level >= 1, doc 05 §1).
+    cities = ((data ?? []) as CoverageCity[]).filter((c) => Number(c.level) >= 1);
   }
 
   const byUf = new Map<string, CoverageCity[]>();
@@ -51,7 +53,7 @@ export default async function CoberturaPage() {
           Deixe o e-mail. Ela entra na nossa fila de expansão e você é avisado quando começarmos.
         </p>
         <div className="mt-3 max-w-xl">
-          <WaitlistForm compact />
+          <WaitlistForm />
         </div>
       </div>
 

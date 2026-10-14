@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alerta de Convocação — seu nome no diário, no seu e-mail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=Newsreader:wght@400;600&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add("js")</script>
+<style>
+:root{--az:#0A1F66;--az2:#2A52D6;--am:#FFD92E;--am2:#C9A400;--tx:#0B1330;--mudo:#4B5575;--bg:#F4F6FB;--ok:#12803F;--erro:#B3261E}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font:400 17px/1.55 "Bricolage Grotesque",system-ui,sans-serif;overflow-x:hidden}
+p{margin:0}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.025em;line-height:1.05}
+h2{font-size:clamp(1.7rem,3.6vw,2.6rem)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+:focus-visible{outline:3px solid var(--am);outline-offset:2px}
+.rv{transition:opacity .7s,transform .7s}
+.js .rv{opacity:0;transform:translateY(28px)}
+.js .rv.in{opacity:1;transform:none}
+
+/* Hero */
+.hero{background:radial-gradient(55% 70% at 78% 45%,var(--az2) 0,transparent 70%),var(--az);color:#fff;clip-path:polygon(0 0,100% 0,100% 94%,0 100%);padding:26px 0 150px}
+.logo{font-weight:800;font-size:1.1rem}
+.hero-in{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;padding-top:44px}
+h1{font-size:clamp(2.2rem,4.8vw,3.6rem)}
+.sub{margin-top:18px;font-size:1.15rem;max-width:30em;color:#DCE4FF}
+.cob{margin-top:8px;font-size:.95rem;color:#B8C6F5}
+
+/* Formulário */
+.form{margin-top:26px;max-width:440px;background:#fff;color:var(--tx);border-radius:16px;padding:24px;box-shadow:0 24px 50px rgba(0,0,0,.3)}
+label{display:block;font-weight:600;font-size:.95rem;margin-bottom:12px}
+input{display:block;width:100%;margin-top:6px;padding:13px 14px;font:inherit;border:2px solid #C5CCE0;border-radius:10px;color:var(--tx);background:#fff}
+input:focus{outline:0;border-color:var(--az2)}
+.status{min-height:1.4em;margin:-4px 0 10px;font-size:.92rem;color:var(--mudo)}
+.status.ok{color:var(--ok);font-weight:600}
+.btn{width:100%;padding:15px;font:800 1.05rem "Bricolage Grotesque",sans-serif;background:var(--am);color:var(--tx);border:0;border-radius:10px;cursor:pointer;box-shadow:0 5px 0 var(--am2);transition:transform .1s,box-shadow .1s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--am2)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--am2)}
+.erro{min-height:1.3em;margin-top:10px;font-size:.92rem;color:var(--erro);font-weight:600}
+.nota{font-size:.88rem;color:var(--mudo)}
+.ok-msg{font-weight:600}
+
+/* Cena 3D */
+.cena{position:relative;height:470px;perspective:1100px}
+.flut{position:absolute;inset:0;animation:flut 6s ease-in-out infinite}
+.palco{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(calc(var(--rx,0)*1deg + 12deg)) rotateY(calc(var(--ry,0)*1deg - 18deg));transition:transform .15s}
+.folha{position:absolute;width:340px;height:410px;left:50%;top:20px;margin-left:-150px;background:#FBFBF8;border-radius:6px;box-shadow:0 30px 60px rgba(0,0,0,.4)}
+.f1{transform:translateZ(70px);padding:20px 22px;overflow:hidden;font:400 .98rem/1.6 Newsreader,Georgia,serif;color:#1a1a1a}
+.f2{transform:translate3d(28px,24px,0)}
+.f3{transform:translate3d(56px,48px,-70px);opacity:.85}
+.f2::before,.f3::before{content:"";position:absolute;inset:26px 24px;background:repeating-linear-gradient(#D9DDE8 0 7px,transparent 7px 21px)}
+.mast{font:800 .95rem "Bricolage Grotesque",sans-serif;border-bottom:2px solid var(--tx);padding-bottom:6px;margin-bottom:12px}
+.sk{height:44px;margin-bottom:12px;background:repeating-linear-gradient(#D9DDE8 0 7px,transparent 7px 21px)}
+mark{color:inherit;font-weight:600;background:linear-gradient(var(--am),var(--am)) no-repeat 0 100%/0 100%;box-decoration-break:clone;-webkit-box-decoration-break:clone;animation:marca .9s 1.2s ease-out forwards}
+.scan{position:absolute;left:0;right:0;top:0;height:3px;background:var(--am);box-shadow:0 0 18px 6px rgba(255,217,46,.55);animation:scan 3.8s ease-in-out infinite}
+.alerta{position:absolute;left:-10px;bottom:20px;width:270px;background:#fff;color:var(--tx);border-radius:14px;padding:14px 16px;box-shadow:0 26px 50px rgba(0,0,0,.45);opacity:0;transform:translateZ(150px) scale(.5);animation:pop .6s 2.6s cubic-bezier(.2,1.5,.4,1) forwards;font-size:.9rem;line-height:1.4}
+.alerta b{display:block;font-size:1rem}
+.alerta small{color:var(--mudo)}
+.alerta i{position:absolute;top:-6px;right:-6px;width:16px;height:16px;border-radius:50%;background:#E5322D;animation:ping 1.6s 3.2s infinite}
+@keyframes flut{50%{transform:translateY(-12px)}}
+@keyframes marca{to{background-size:100% 100%}}
+@keyframes scan{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
+@keyframes pop{to{opacity:1;transform:translateZ(150px) scale(1)}}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(229,50,45,.6)}100%{box-shadow:0 0 0 14px rgba(229,50,45,0)}}
+
+/* Faixa de cidades */
+.fita{position:relative;z-index:2;margin:-52px -2% 0;background:var(--am);color:var(--tx);transform:rotate(-1.2deg);overflow:hidden;white-space:nowrap;font-weight:800;padding:12px 0;box-shadow:0 8px 0 var(--am2)}
+.fita div{display:inline-block;animation:fita 45s linear infinite}
+.fita span{margin:0 22px}
+.fita span::before{content:"";display:inline-block;width:9px;height:9px;background:var(--az);margin-right:22px;transform:rotate(45deg)}
+@keyframes fita{to{transform:translateX(-50%)}}
+
+/* Como funciona */
+section{padding:84px 0}
+.titulo{max-width:18em}
+.sub2{margin-top:12px;color:var(--mudo);max-width:34em}
+.cards{margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;perspective:900px}
+.card{background:#fff;border-radius:18px;padding:28px;box-shadow:0 14px 34px rgba(10,31,102,.14);transform-style:preserve-3d;transform:rotateX(calc(var(--rx,0)*1deg)) rotateY(calc(var(--ry,0)*1deg));transition:transform .15s}
+.num{width:50px;height:50px;border-radius:50%;background:var(--am);display:grid;place-items:center;font-weight:800;font-size:1.3rem;box-shadow:0 4px 0 var(--am2);transform:translateZ(36px);margin-bottom:16px}
+.card h3{font-size:1.25rem;transform:translateZ(18px)}
+.card p{margin-top:8px;color:var(--mudo)}
+
+/* Preço */
+.preco{background:var(--am)}
+.planos{margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:760px;perspective:900px}
+.plano{background:#fff;border-radius:18px;padding:30px;box-shadow:0 16px 0 -6px var(--am2),0 24px 40px rgba(0,0,0,.18);transform:rotateX(calc(var(--rx,0)*1deg)) rotateY(calc(var(--ry,0)*1deg));transition:transform .15s}
+.plano.dark{background:var(--az);color:#fff}
+.plano small{display:block;font-weight:600;opacity:.8}
+.plano .v{font-size:2.8rem;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-top:6px}
+.plano .v span{font-size:1rem;font-weight:400;letter-spacing:0}
+.plano p{margin-top:8px;font-size:.95rem;opacity:.85}
+.preco .nota2{margin-top:22px;font-weight:600}
+
+/* FAQ */
+.faq{max-width:760px}
+.faq h2{margin-bottom:22px}
+details{background:#fff;border-radius:12px;margin-bottom:10px;box-shadow:0 4px 14px rgba(10,31,102,.08)}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:16px;padding:18px 20px;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:1.5rem;line-height:1;color:var(--az2);transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding:0 20px 18px;color:var(--mudo)}
+
+/* CTA final */
+.final{background:radial-gradient(60% 90% at 50% 0,var(--az2) 0,transparent 70%),var(--az);color:#fff;border-radius:24px;padding:60px 24px;text-align:center}
+.final h2{max-width:18em;margin:0 auto}
+.final .form{margin:30px auto 0;text-align:left}
+footer{padding:20px 0 56px;font-size:.9rem;color:var(--mudo);max-width:760px}
+
+@media(max-width:860px){
+  .hero-in,.cards,.planos{grid-template-columns:1fr}
+  .cena{transform:scale(.78);transform-origin:top center;height:390px;margin-top:-10px}
+  section{padding:56px 0}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  mark{background-size:100% 100%}.alerta{opacity:1;transform:translateZ(150px)}.js .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero" id="cidade">
+  <div class="wrap">
+    <div class="logo">Alerta de Convocação</div>
+    <div class="hero-in">
+      <div>
+        <h1>Passou no concurso? Sua nomeação pode sair num diário que você nunca vai ler.</h1>
+        <p class="sub">A gente lê o Diário Oficial do seu município todos os dias e te avisa por e-mail na hora que seu nome aparecer.</p>
+        <p class="cob">Hoje monitoramos <b class="total"></b> municípios.</p>
+        <div data-form></div>
+      </div>
+      <div class="cena" aria-hidden="true">
+        <div class="flut"><div class="palco">
+          <div class="folha f3"></div>
+          <div class="folha f2"></div>
+          <div class="folha f1">
+            <div class="mast">Diário Oficial de Ipiaú (BA)</div>
+            <div class="sk"></div>
+            <p>…RESOLVE <b>convocar</b> o candidato aprovado no Concurso Público… <mark>MARIVALDO B. DA SILVA</mark> … para comparecer no prazo de 30 (trinta) dias…</p>
+            <div class="sk" style="margin-top:14px"></div>
+            <div class="scan"></div>
+          </div>
+          <div class="alerta"><i></i><b>Seu nome apareceu no diário de Ipiaú (BA)</b><small>Alerta enviado agora por e-mail</small></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="fita" aria-hidden="true"><div id="fita"></div></div>
+
+<main>
+<section class="wrap">
+  <div class="rv">
+    <h2 class="titulo">Nomeações assim saem toda semana. Quem perde o prazo pode perder a vaga.</h2>
+    <p class="sub2">Ninguém lê diário oficial todo dia. Nós lemos, e o trecho real é este que você viu na tela.</p>
+  </div>
+  <div class="cards rv">
+    <div class="card" data-tilt><div class="num">1</div><h3>Escolha a cidade</h3><p>Diga o município do concurso e confirme seu e-mail.</p></div>
+    <div class="card" data-tilt><div class="num">2</div><h3>Nós lemos os diários</h3><p>Todos os dias, em todos os municípios monitorados.</p></div>
+    <div class="card" data-tilt><div class="num">3</div><h3>Você é avisado</h3><p>Se seu nome aparecer numa convocação, o alerta chega na hora, com o trecho do diário.</p></div>
+  </div>
+</section>
+
+<section class="preco">
+  <div class="wrap">
+    <h2 class="rv">Menos que um lanche por mês.</h2>
+    <div class="planos rv">
+      <div class="plano" data-tilt><small>Mensal</small><div class="v">R$ 9,90<span>/mês</span></div><p>Cancele quando quiser.</p></div>
+      <div class="plano dark" data-tilt><small>Anual</small><div class="v">R$ 49<span>/ano</span></div><p>Equivale a R$ 4,08 por mês.</p></div>
+    </div>
+    <p class="nota2">Entrar na lista é grátis, sem cartão. Você só paga se decidir assinar.</p>
+  </div>
+</section>
+
+<section class="wrap faq">
+  <h2 class="rv">Perguntas de quem está esperando nomeação</h2>
+  <details><summary>Cobre o meu município?</summary><p>Hoje monitoramos <span class="total"></span> municípios. Digite o seu no formulário: se ainda não estiver na lista, você entra na fila e avisamos quando ele for incluído.</p></details>
+  <details><summary>Funciona para concurso estadual ou federal?</summary><p>Por enquanto lemos apenas diários oficiais municipais.</p></details>
+  <details><summary>Isso é garantia de que vou ser avisado?</summary><p>Não. Avisamos quando encontramos seu nome nos diários que lemos, mas falhas de publicação, de digitalização ou de grafia do nome podem acontecer. Use o alerta como reforço e continue acompanhando o site oficial do seu concurso.</p></details>
+  <details><summary>E se eu for nomeado e quiser cancelar?</summary><p>Você cancela quando quiser, sem multa. A assinatura é mensal ou anual.</p></details>
+  <details><summary>O que acontece depois que eu entro na lista?</summary><p>Você recebe um e-mail para confirmar o cadastro. Quando abrirmos as assinaturas, avisamos você primeiro.</p></details>
+</section>
+
+<section class="wrap" style="padding-top:0">
+  <div class="final rv">
+    <h2>Nunca perca sua nomeação porque o diário saiu numa sexta-feira.</h2>
+    <div data-form></div>
+  </div>
+</section>
+</main>
+
+<footer class="wrap">O Alerta de Convocação faz leitura automatizada de diários oficiais e envia alertas por e-mail. Não somos assessoria jurídica e nada aqui é aconselhamento legal. Vale sempre a publicação oficial.</footer>
+
+<template id="tpl-form">
+  <form class="form" novalidate>
+    <label>Cidade do concurso<input class="cidade" type="text" autocomplete="off" placeholder="Digite o município"></label>
+    <datalist></datalist>
+    <p class="status" aria-live="polite"></p>
+    <label>Seu e-mail<input class="email-in" type="email" autocomplete="email" placeholder="voce@email.com"></label>
+    <button class="btn" type="submit">Quero ser avisado na minha cidade</button>
+    <p class="erro" role="alert"></p>
+    <p class="nota">Entrar na lista é grátis, sem cartão. Você confirma o e-mail antes de entrar.</p>
+  </form>
+</template>
+
+<script>
+// TROQUE pela sua API de municípios e pelo total real do banco.
+const CIDADES=["Venâncio Aires (RS)","Porto Alegre (RS)","Santa Cruz do Sul (RS)","Ipiaú (BA)","Salvador (BA)","São Paulo (SP)","Curitiba (PR)","Recife (PE)"];
+const TOTAL=955;
+const calmo=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+document.querySelectorAll(".total").forEach(n=>n.textContent=TOTAL);
+const fita=document.getElementById("fita");
+const itens=CIDADES.map(c=>"<span>Lido hoje: "+c+"</span>").join("");
+fita.innerHTML=itens+itens+itens+itens;
+
+// Tilt 3D: define --rx/--ry com a posição do mouse
+function tilt(alvo,area,max){
+  area.addEventListener("pointermove",e=>{
+    const r=area.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    alvo.style.setProperty("--rx",(-y*max).toFixed(1));alvo.style.setProperty("--ry",(x*max).toFixed(1));
+  });
+  area.addEventListener("pointerleave",()=>{alvo.style.setProperty("--rx",0);alvo.style.setProperty("--ry",0)});
+}
+if(!calmo){
+  tilt(document.querySelector(".cena"),document.querySelector(".hero"),14);
+  document.querySelectorAll("[data-tilt]").forEach(el=>tilt(el,el,10));
+}
+
+// Entrada ao rolar (só nos blocos principais)
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll(".rv").forEach(el=>io.observe(el));
+
+// Formulário (mesmo template no hero e no CTA final)
+document.querySelectorAll("[data-form]").forEach((slot,i)=>{
+  const f=document.getElementById("tpl-form").content.firstElementChild.cloneNode(true);
+  const c=f.querySelector(".cidade"),dl=f.querySelector("datalist"),st=f.querySelector(".status"),em=f.querySelector(".email-in"),er=f.querySelector(".erro");
+  dl.id="cidades-"+i;c.setAttribute("list",dl.id);
+  CIDADES.forEach(n=>{const o=document.createElement("option");o.value=n;dl.appendChild(o)});
+  c.addEventListener("input",()=>{
+    const v=c.value.trim(),ok=CIDADES.some(n=>n.toLowerCase()===v.toLowerCase());
+    st.className="status"+(ok?" ok":"");
+    st.textContent=ok?"✓ Já monitoramos "+v+".":v.length>2?"Ainda não monitoramos essa cidade. Entre na lista e avisamos quando ela for incluída.":"";
+  });
+  f.addEventListener("submit",e=>{
+    e.preventDefault();er.textContent="";
+    if(!c.value.trim()){er.textContent="Digite a cidade do concurso.";c.focus();return}
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em.value)){er.textContent="Digite um e-mail válido.";em.focus();return}
+    // TODO: fetch("/api/waitlist",{method:"POST",body:JSON.stringify({cidade:c.value,email:em.value})})
+    const p=document.createElement("p");p.className="ok-msg";
+    p.textContent="Pronto. Enviamos um e-mail de confirmação para "+em.value+". Confirme para entrar na lista.";
+    f.replaceChildren(p);
+  });
+  slot.replaceWith(f);
+});
+</script>
+</body>
+</html>

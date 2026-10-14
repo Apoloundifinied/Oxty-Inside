@@ -32,7 +32,7 @@ Segue `03-fluxos-e-telas.md` Tela 1. Reforços específicos da Fase 0:
 
 ## 6. Copy — linhas prontas para adaptar (voz humana)
 - Headline: **"Passou no concurso? Sua nomeação pode sair num diário que você nunca vai ler."**
-- Sub: "A gente lê o Diário Oficial do seu município todos os dias e te avisa no Telegram na hora que seu nome aparecer."
+- Sub: "A gente lê o Diário Oficial do seu município todos os dias e te avisa por e-mail na hora que seu nome aparecer." (ADR-013: sem Telegram no MVP)
 - Widget: "Confere se já monitoramos a sua cidade 👇"
 - Honestidade: "Se ainda não cobrimos, você entra numa lista e a gente te avisa quando começar. Sem enrolação."
 - Preço-âncora: "Vai custar menos que um lanche por mês. A lista de espera é de graça."

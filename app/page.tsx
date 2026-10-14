@@ -1,8 +1,13 @@
 import Link from "next/link";
-import { CityCheck } from "@/components/CityCheck";
-import { WaitlistForm } from "@/components/WaitlistForm";
+import { SignupForm } from "@/components/SignupForm";
+import { HeroScene } from "@/components/HeroScene";
+import { Reveal } from "@/components/Reveal";
+import { Tilt } from "@/components/Tilt";
 import { trackEvent } from "@/app/actions/waitlist";
+import { coveredCityCount, marqueeCities } from "@/app/actions/coverage";
 import { CONFIG } from "@/lib/config";
+
+export const dynamic = "force-dynamic";
 
 export default async function LandingPage({
   searchParams,
@@ -14,143 +19,225 @@ export default async function LandingPage({
     kind: "page_view",
     meta: {
       page: "/",
-      utm: Object.fromEntries(
-        Object.entries(sp).filter(([k]) => k.startsWith("utm_"))
-      ),
+      utm: Object.fromEntries(Object.entries(sp).filter(([k]) => k.startsWith("utm_"))),
     },
   });
 
+  const coveredCount = (await coveredCityCount()) ?? CONFIG.COVERAGE_COUNT_APPROX;
+  const fitaCidades = await marqueeCities();
+  const fitaItens = [...fitaCidades, ...fitaCidades, ...fitaCidades, ...fitaCidades];
+
   return (
-    <main>
-      {/* Hero */}
-      <section className="bg-gradient-to-b from-green-50 to-white">
-        <div className="mx-auto max-w-4xl px-4 pb-14 pt-16 sm:pt-24">
-          <p className="mb-4 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
-            Para aprovados em concurso público
-          </p>
-          <h1 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-            Passou no concurso? Sua nomeação pode sair num diário que você nunca vai ler.
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg text-gray-700">
-            A gente lê o Diário Oficial do seu município todos os dias e te avisa no
-            Telegram e no e-mail na hora que seu nome aparecer.
-          </p>
-          <p className="mt-2 text-sm text-gray-500">
-            Hoje monitoramos ~{CONFIG.COVERAGE_COUNT_APPROX} municípios —{" "}
-            <a href="#cidade" className="underline">confira o seu 👇</a>
-          </p>
-
-          <div id="cidade" className="mt-8 grid gap-6 lg:grid-cols-2">
-            <CityCheck />
-            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-              <p className="mb-3 font-semibold">Ou entre direto na lista de espera:</p>
-              <WaitlistForm compact />
+    <>
+      {/* ===== Hero ===== */}
+      <header className="hero" id="cidade">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="flex items-center gap-3 font-extrabold text-lg">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/oxty-inside.png" alt="Oxty Inside" width="36" height="20" />
+            Oxty Inside
+          </div>
+          <div className="grid items-center gap-8 pt-11 lg:grid-cols-2">
+            <div>
+              <h1 className="text-[clamp(2.2rem,4.8vw,3.6rem)]">
+                Passou no concurso? Sua nomeação pode sair num diário que você nunca vai ler.
+              </h1>
+              <p className="mt-4 max-w-[30em] text-lg" style={{ color: "#dce4ff" }}>
+                A gente lê o Diário Oficial do seu município todos os dias e te avisa por
+                e-mail na hora que seu nome aparecer.
+              </p>
+              <p className="mt-2 text-[0.95rem]" style={{ color: "#b8c6f5" }}>
+                Hoje monitoramos <b>{coveredCount.toLocaleString("pt-BR")}</b> municípios.
+              </p>
+              <SignupForm />
             </div>
+            <HeroScene />
           </div>
         </div>
-      </section>
+      </header>
 
-      {/* Como funciona */}
-      <section className="mx-auto max-w-4xl px-4 py-14">
-        <h2 className="text-2xl font-bold">Como funciona</h2>
-        <div className="mt-6 grid gap-6 sm:grid-cols-3">
-          {[
-            {
-              n: "1",
-              t: "Você cadastra seu nome",
-              d: "Aquele nome completo que sai no diário, o órgão e a cidade do seu concurso.",
-            },
-            {
-              n: "2",
-              t: "A gente lê o diário todo dia",
-              d: "Varrer diário oficial é chato. Por isso a gente faz isso por você, todo santo dia, de madrugada.",
-            },
-            {
-              n: "3",
-              t: "Seu nome apareceu? Você fica sabendo",
-              d: "Chega um alerta no seu Telegram e no seu e-mail, com o trecho e o link do diário oficial.",
-            },
-          ].map((s) => (
-            <div key={s.n} className="rounded-xl border border-gray-200 p-5">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-100 font-bold text-green-800">
-                {s.n}
-              </span>
-              <h3 className="mt-3 font-semibold">{s.t}</h3>
-              <p className="mt-1 text-sm text-gray-600">{s.d}</p>
+      {/* ===== Fita de cidades ===== */}
+      <div className="fita" aria-hidden="true">
+        <div>
+          {fitaItens.map((c, i) => (
+            <span key={i}>Lido hoje: {c}</span>
+          ))}
+        </div>
+      </div>
+
+      <main>
+        {/* ===== Como funciona ===== */}
+        <section className="mx-auto max-w-6xl px-6 py-20">
+          <Reveal>
+            <h2 className="max-w-[18em] text-[clamp(1.7rem,3.6vw,2.6rem)]">
+              Nomeações assim saem toda semana. Quem perde o prazo pode perder a vaga.
+            </h2>
+            <p className="mt-3 max-w-[34em]" style={{ color: "var(--color-mudo)" }}>
+              Ninguém lê diário oficial todo dia. Nós lemos, e o trecho real é esse que você
+              viu ali em cima.
+            </p>
+          </Reveal>
+          <Reveal className="mt-10">
+            <div className="cards-3col">
+              {[
+                {
+                  n: "1",
+                  t: "Escolha a cidade",
+                  d: "Diga o município do concurso e confirme seu e-mail.",
+                },
+                {
+                  n: "2",
+                  t: "Nós lemos os diários",
+                  d: "Todos os dias, em todos os municípios monitorados.",
+                },
+                {
+                  n: "3",
+                  t: "Você é avisado",
+                  d: "Se seu nome aparecer numa convocação, o alerta chega na hora, com o trecho do diário.",
+                },
+              ].map((s) => (
+                <Tilt key={s.n} className="card-tilt" max={10}>
+                  <div className="card-num">{s.n}</div>
+                  <h3>{s.t}</h3>
+                  <p>{s.d}</p>
+                </Tilt>
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
+          </Reveal>
+        </section>
 
-      {/* Prova real */}
-      <section className="bg-gray-50">
-        <div className="mx-auto max-w-4xl px-4 py-14">
-          <h2 className="text-2xl font-bold">Isso é real</h2>
-          <p className="mt-2 text-gray-700">
-            Nomeações assim saem toda semana em diários municipais — e quem perde o prazo
-            pode perder a vaga.
-          </p>
-          <figure className="mt-6 rounded-xl border border-gray-300 bg-white p-5 shadow-sm">
-            <span className="mb-3 inline-block rounded bg-amber-100 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-amber-800">
-              Exemplo real de publicação
-            </span>
-            <blockquote className="border-l-4 border-gray-300 pl-4 font-mono text-sm leading-relaxed text-gray-800">
-              “…RESOLVE <strong>convocar</strong> o candidato aprovado no Concurso Público…
-              <strong> MARIVALDO BITTENCOURT DA SILVA</strong> … para comparecer no prazo de
-              30 (trinta) dias…”
-            </blockquote>
-            <figcaption className="mt-3 text-sm text-gray-500">
-              Diário Oficial de Ipiaú (BA), 08/10/2026 — encontrado pela mesma busca que usamos.
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-
-      {/* Preco-ancora */}
-      <section className="mx-auto max-w-4xl px-4 py-14 text-center">
-        <p className="text-xl font-semibold">
-          Vai custar menos que um lanche por mês.
-        </p>
-        <p className="mt-2 text-gray-600">A lista de espera é de graça.</p>
-      </section>
-
-      {/* FAQ */}
-      <section className="mx-auto max-w-4xl px-4 pb-16">
-        <h2 className="text-2xl font-bold">Perguntas de quem está esperando nomeação</h2>
-        <div className="mt-6 space-y-4">
-          {[
-            {
-              q: "Cobre o meu município?",
-              a: (
-                <>
-                  Confere no campo lá de cima ou na página{" "}
-                  <Link href="/cobertura" className="underline">O que cobrimos</Link>. Se ainda
-                  não cobrimos, sua cidade entra na nossa fila de expansão e você é avisado.
-                </>
-              ),
-            },
-            {
-              q: "E se eu for nomeado e quiser cancelar?",
-              a: "Ótimo, é exatamente esse o objetivo. Cancele quando quiser, sem multa e sem conversa fiada.",
-            },
-            {
-              q: "Isso é garantia de que vou ser avisado?",
-              a: "É leitura automatizada com alerta, não garantia legal nem assessoria jurídica. O que vale é sempre o Diário Oficial — a gente te entrega o link oficial em cada alerta pra você conferir.",
-            },
-          ].map((f) => (
-            <details key={f.q} className="rounded-xl border border-gray-200 p-4">
-              <summary className="cursor-pointer font-medium">{f.q}</summary>
-              <p className="mt-2 text-gray-700">{f.a}</p>
-            </details>
-          ))}
-        </div>
-        <div className="mt-10 rounded-xl bg-green-600 p-6 text-center text-white">
-          <p className="text-xl font-bold">Nunca perca sua nomeação porque o diário saiu numa sexta-feira.</p>
-          <div className="mx-auto mt-4 max-w-xl">
-            <WaitlistForm compact />
+        {/* ===== Seção: a cobertura cresce sozinha ===== */}
+        <section style={{ background: "#fff", padding: "84px 0" }}>
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 lg:grid-cols-2">
+            <Reveal>
+              <h2 className="max-w-[16em] text-[clamp(1.7rem,3.6vw,2.6rem)]">
+                Esse número não para de crescer.
+              </h2>
+              <p className="mt-4 max-w-[34em]" style={{ color: "var(--color-mudo)" }}>
+                Os {coveredCount.toLocaleString("pt-BR")} municípios de hoje não são um teto.
+                São o retrato de agora.
+              </p>
+              <p className="mt-4 max-w-[34em]" style={{ color: "var(--color-mudo)" }}>
+                Nossa leitura é feita sobre o Querido Diário, projeto da Open Knowledge
+                Brasil que liga coletores novos de diário oficial toda semana. A cada cidade
+                que entra lá, ela entra aqui automaticamente — sem você precisar pedir, sem
+                a gente precisar mexer em nada.
+              </p>
+              <p className="mt-4 max-w-[34em]" style={{ color: "var(--color-mudo)" }}>
+                E se a sua cidade ainda não tem coletor, isso não é um beco sem saída: sua
+                entrada na lista vira prioridade real na fila de expansão. As cidades mais
+                pedidas são as primeiras que a gente corre atrás.
+              </p>
+            </Reveal>
+            <Reveal>
+              <div
+                className="rounded-2xl p-8"
+                style={{ background: "var(--color-az)", color: "#fff", boxShadow: "0 24px 50px rgba(10,31,102,.25)" }}
+              >
+                <p className="text-sm font-semibold uppercase tracking-wide" style={{ color: "#b8c6f5" }}>
+                  Municípios monitorados hoje
+                </p>
+                <p className="mt-2 text-[3.6rem] font-extrabold leading-none tabular-nums">
+                  {coveredCount.toLocaleString("pt-BR")}
+                </p>
+                <p className="mt-3 text-sm" style={{ color: "#dce4ff" }}>
+                  Atualizado automaticamente a cada semana. Na semana passada eram menos —
+                  e na próxima, provavelmente serão mais.
+                </p>
+                <Link
+                  href="/cobertura"
+                  className="mt-6 inline-block rounded-[10px] px-5 py-3 font-bold"
+                  style={{ background: "var(--color-am)", color: "var(--color-tx)" }}
+                >
+                  Ver a lista completa
+                </Link>
+              </div>
+            </Reveal>
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+
+        {/* ===== Preco-ancora ===== */}
+        <section className="preco">
+          <div className="mx-auto max-w-6xl px-6">
+            <Reveal>
+              <h2 className="text-[clamp(1.7rem,3.6vw,2.6rem)]">Menos que um lanche por mês.</h2>
+            </Reveal>
+            <Reveal className="mt-9">
+              <div className="grid max-w-[760px] gap-6 sm:grid-cols-2" style={{ perspective: "900px" }}>
+                <Tilt className="plano" max={8}>
+                  <small className="block font-semibold opacity-80">Mensal</small>
+                  <div className="v">R$ 9,90<span>/mês</span></div>
+                  <p className="mt-2 text-[0.95rem] opacity-85">Cancele quando quiser.</p>
+                </Tilt>
+                <Tilt className="plano dark" max={8}>
+                  <small className="block font-semibold opacity-80">Anual</small>
+                  <div className="v">R$ 49<span>/ano</span></div>
+                  <p className="mt-2 text-[0.95rem] opacity-85">Equivale a R$ 4,08 por mês.</p>
+                </Tilt>
+              </div>
+            </Reveal>
+            <p className="mt-6 font-semibold">
+              Entrar na lista é grátis, sem cartão. Você só paga se decidir assinar.
+            </p>
+          </div>
+        </section>
+
+        {/* ===== FAQ ===== */}
+        <section className="mx-auto max-w-3xl px-6 py-20">
+          <Reveal>
+            <h2 className="mb-6 text-[clamp(1.7rem,3.6vw,2.6rem)]">
+              Perguntas de quem está esperando nomeação
+            </h2>
+            {[
+              {
+                q: "Cobre o meu município?",
+                a: `Hoje monitoramos ${coveredCount.toLocaleString("pt-BR")} municípios. Digite o seu no formulário lá em cima: se ainda não estiver na lista, você entra na fila e avisamos quando ele for incluído. A lista completa está em “O que cobrimos”.`,
+              },
+              {
+                q: "Funciona para concurso estadual ou federal?",
+                a: "Por enquanto lemos apenas diários oficiais municipais.",
+              },
+              {
+                q: "Isso é garantia de que vou ser avisado?",
+                a: "Não. Avisamos quando encontramos seu nome nos diários que lemos, mas falhas de publicação, de digitalização ou de grafia do nome podem acontecer. Use o alerta como reforço e continue acompanhando o site oficial do seu concurso.",
+              },
+              {
+                q: "E se eu for nomeado e quiser cancelar?",
+                a: "Ótimo, é exatamente esse o objetivo. Você cancela quando quiser, sem multa e sem conversa fiada.",
+              },
+              {
+                q: "O que acontece depois que eu entro na lista?",
+                a: "Você recebe um e-mail para confirmar o cadastro. Quando abrirmos as assinaturas, avisamos você primeiro.",
+              },
+            ].map((f) => (
+              <details
+                key={f.q}
+                className="mb-2.5 rounded-xl bg-white"
+                style={{ boxShadow: "0 4px 14px rgba(10,31,102,.08)" }}
+              >
+                <summary className="cursor-pointer px-5 py-4 font-semibold">{f.q}</summary>
+                <p className="px-5 pb-4" style={{ color: "var(--color-mudo)" }}>
+                  {f.a}
+                </p>
+              </details>
+            ))}
+          </Reveal>
+        </section>
+
+        {/* ===== CTA final ===== */}
+        <section className="mx-auto max-w-6xl px-6 pb-20">
+          <Reveal>
+            <div className="final">
+              <h2 className="mx-auto max-w-[18em] text-[clamp(1.7rem,3.6vw,2.6rem)]">
+                Nunca perca sua nomeação porque o diário saiu numa sexta-feira.
+              </h2>
+              <div className="mx-auto mt-7 max-w-[440px] text-left">
+                <SignupForm />
+              </div>
+            </div>
+          </Reveal>
+        </section>
+      </main>
+    </>
   );
 }

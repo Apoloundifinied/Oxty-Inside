@@ -1,9 +1,9 @@
-# Alerta de Convocação
+# Oxty Inside (Alerta de Convocação)
 
 > "Nunca perca sua nomeação porque o Diário Oficial saiu numa sexta-feira."
 
 SaaS low ticket (BR, B2C, fechado) que lê o Diário Oficial municipal todos os dias e avisa o
-concurseiro no Telegram e no e-mail quando o nome dele aparecer.
+concurseiro por e-mail quando o nome dele aparecer (ADR-012: cobrança Cakto · ADR-013: e-mail no MVP).
 
 **Leia primeiro:** [`CONTEXT.md`](./CONTEXT.md) (fonte única) · depois [`AGENTS.md`](./AGENTS.md).
 
@@ -41,7 +41,7 @@ jornada da landing continua navegável.
 ## Regras de ouro
 
 - Nenhuma decisão nova sem ADR em `DECISIONS.md`.
-- Stack travada: Next.js + TS strict + Tailwind + Supabase + Vercel + AbacatePay + Resend +
-  Telegram + Turnstile + Zod + Vitest + Playwright. Sem IA no produto.
+- Stack travada: Next.js + TS strict + Tailwind + Supabase + Vercel + Cakto + Resend +
+  Turnstile + Zod + Vitest + Playwright. Sem IA no produto. (Telegram: Fase 2+, ADR-013.)
 - PT-BR em toda interface e copy. Código e comentários em inglês exceto domínio.
 - Nunca prometer cobertura total. Nunca interpretar ato público juridicamente.

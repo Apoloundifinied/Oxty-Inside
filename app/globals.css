@@ -1,10 +1,392 @@
 @import "tailwindcss";
 
+/* Design tokens — identidade Oxty Inside (referencia: docs/re-design v2) */
 @theme {
-  --color-brand: #16a34a;
-  --color-brand-dark: #15803d;
+  --color-az: #0a1f66;
+  --color-az2: #2a52d6;
+  --color-am: #ffd92e;
+  --color-am2: #c9a400;
+  --color-tx: #0b1330;
+  --color-mudo: #4b5575;
+  --color-bg: #f4f6fb;
+  --color-ok: #12803f;
+  --color-erro: #b3261e;
+}
+
+:root {
+  /* tokens de motion (motion-design §3) */
+  --dur-fast: 180ms;
+  --dur-base: 260ms;
+  --dur-slow: 420ms;
+  --dur-deliberate: 700ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-tx);
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-am);
+  outline-offset: 2px;
+}
+
+/* ===== Entrada ao rolar (revelar uma vez) ===== */
+.rv {
+  transition: opacity var(--dur-deliberate) var(--ease-enter),
+    transform var(--dur-deliberate) var(--ease-enter);
+}
+.js .rv {
+  opacity: 0;
+  transform: translateY(28px);
+}
+.js .rv.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===== Hero ===== */
+.hero {
+  background: radial-gradient(55% 70% at 78% 45%, var(--color-az2) 0, transparent 70%),
+    var(--color-az);
+  color: #fff;
+  clip-path: polygon(0 0, 100% 0, 100% 94%, 0 100%);
+  padding: 26px 0 150px;
+}
+
+/* ===== Formulario (cartao branco sobre o hero) ===== */
+.form-card {
+  background: #fff;
+  color: var(--color-tx);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.3);
+}
+.form-input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 13px 14px;
+  font: inherit;
+  border: 2px solid #c5cce0;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--color-tx);
+  transition: border-color var(--dur-fast) var(--ease-standard);
+}
+.form-input:focus {
+  outline: 0;
+  border-color: var(--color-az2);
+}
+.form-status {
+  min-height: 1.4em;
+  font-size: 0.92rem;
+  color: var(--color-mudo);
+}
+.form-status.ok {
+  color: var(--color-ok);
+  font-weight: 600;
+}
+.btn-main {
+  width: 100%;
+  padding: 15px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  background: var(--color-am);
+  color: var(--color-tx);
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 5px 0 var(--color-am2);
+  transition: transform var(--dur-fast) var(--ease-spring),
+    box-shadow var(--dur-fast) var(--ease-spring);
+}
+.btn-main:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 var(--color-am2);
+}
+.btn-main:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--color-am2);
+}
+.btn-main:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* ===== Cena 3D: pilha de diarios + destaque + alerta ===== */
+.cena {
+  position: relative;
+  height: 470px;
+  perspective: 1100px;
+}
+.flut {
+  position: absolute;
+  inset: 0;
+  animation: flut 6s ease-in-out infinite;
+}
+.palco {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--rx, 0) * 1deg + 12deg)) rotateY(calc(var(--ry, 0) * 1deg - 18deg));
+  transition: transform 150ms var(--ease-standard);
+}
+.folha {
+  position: absolute;
+  width: 340px;
+  height: 410px;
+  left: 50%;
+  top: 20px;
+  margin-left: -150px;
+  background: #fbfbf8;
+  border-radius: 6px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+}
+.f1 {
+  transform: translateZ(70px);
+  padding: 20px 22px;
+  overflow: hidden;
+  font: 400 0.98rem/1.6 "Newsreader", Georgia, serif;
+  color: #1a1a1a;
+}
+.f2 {
+  transform: translate3d(28px, 24px, 0);
+}
+.f3 {
+  transform: translate3d(56px, 48px, -70px);
+  opacity: 0.85;
+}
+.f2::before, .f3::before {
+  content: "";
+  position: absolute;
+  inset: 26px 24px;
+  background: repeating-linear-gradient(#d9dde8 0 7px, transparent 7px 21px);
+}
+.mast {
+  font: 800 0.95rem "Bricolage Grotesque", sans-serif;
+  border-bottom: 2px solid var(--color-tx);
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+.sk {
+  height: 44px;
+  margin-bottom: 12px;
+  background: repeating-linear-gradient(#d9dde8 0 7px, transparent 7px 21px);
+}
+.f1 mark {
+  color: inherit;
+  font-weight: 600;
+  background: linear-gradient(var(--color-am), var(--color-am)) no-repeat 0 100% / 0 100%;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  animation: marca 0.9s 1.2s ease-out forwards;
+}
+.scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: var(--color-am);
+  box-shadow: 0 0 18px 6px rgba(255, 217, 46, 0.55);
+  animation: scan 3.8s ease-in-out infinite;
+}
+.alerta-pop {
+  position: absolute;
+  left: -10px;
+  bottom: 20px;
+  width: 270px;
+  background: #fff;
+  color: var(--color-tx);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 26px 50px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transform: translateZ(150px) scale(0.5);
+  animation: pop 0.6s 2.6s cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.alerta-pop small {
+  color: var(--color-mudo);
+}
+.alerta-pop .dot {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e5322d;
+  animation: ping 1.6s 3.2s infinite;
+}
+@keyframes flut {
+  50% { transform: translateY(-12px); }
+}
+@keyframes marca {
+  to { background-size: 100% 100%; }
+}
+@keyframes scan {
+  0% { top: 0; }
+  50% { top: calc(100% - 3px); }
+  100% { top: 0; }
+}
+@keyframes pop {
+  to { opacity: 1; transform: translateZ(150px) scale(1); }
+}
+@keyframes ping {
+  0% { box-shadow: 0 0 0 0 rgba(229, 50, 45, 0.6); }
+  100% { box-shadow: 0 0 0 14px rgba(229, 50, 45, 0); }
+}
+
+/* ===== Fita de cidades ===== */
+.fita {
+  position: relative;
+  z-index: 2;
+  margin: -52px -2% 0;
+  background: var(--color-am);
+  color: var(--color-tx);
+  transform: rotate(-1.2deg);
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 800;
+  padding: 12px 0;
+  box-shadow: 0 8px 0 var(--color-am2);
+}
+.fita div {
+  display: inline-block;
+  animation: fita 45s linear infinite;
+}
+.fita span {
+  margin: 0 22px;
+}
+.fita span::before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  background: var(--color-az);
+  margin-right: 22px;
+  transform: rotate(45deg);
+}
+@keyframes fita {
+  to { transform: translateX(-50%); }
+}
+
+/* ===== Cards com tilt ===== */
+.cards-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  perspective: 900px;
+}
+.card-tilt {
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 14px 34px rgba(10, 31, 102, 0.14);
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--rx, 0) * 1deg)) rotateY(calc(var(--ry, 0) * 1deg));
+  transition: transform 150ms var(--ease-standard);
+}
+.card-num {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--color-am);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 0 var(--color-am2);
+  transform: translateZ(36px);
+  margin-bottom: 16px;
+}
+.card-tilt h3 {
+  transform: translateZ(18px);
+  font-size: 1.25rem;
+}
+.card-tilt p {
+  margin-top: 8px;
+  color: var(--color-mudo);
+}
+
+/* ===== Secao preco ===== */
+.preco {
+  background: var(--color-am);
+  padding: 84px 0;
+}
+.plano {
+  background: #fff;
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 16px 0 -6px var(--color-am2), 0 24px 40px rgba(0, 0, 0, 0.18);
+  transform: rotateX(calc(var(--rx, 0) * 1deg)) rotateY(calc(var(--ry, 0) * 1deg));
+  transition: transform 150ms var(--ease-standard);
+}
+.plano.dark {
+  background: var(--color-az);
+  color: #fff;
+}
+.plano .v {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-top: 6px;
+}
+.plano .v span {
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* ===== CTA final ===== */
+.final {
+  background: radial-gradient(60% 90% at 50% 0, var(--color-az2) 0, transparent 70%),
+    var(--color-az);
+  color: #fff;
+  border-radius: 24px;
+  padding: 60px 24px;
+  text-align: center;
+}
+
+@media (max-width: 860px) {
+  .cena {
+    transform: scale(0.78);
+    transform-origin: top center;
+    height: 390px;
+    margin-top: -10px;
+  }
+}
+
+/* ===== Acessibilidade: movimento reduzido (obrigatorio) ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .js .rv { opacity: 1; transform: none; }
+  .f1 mark { background-size: 100% 100%; }
+  .alerta-pop { opacity: 1; transform: translateZ(150px) scale(1); }
 }

@@ -28,10 +28,10 @@ export function waitlistConfirmEmail(confirmUrl: string): { subject: string; htm
     subject: "Confirma seu lugar na lista de espera ✅",
     html: `
       <div style="font-family: system-ui, sans-serif; max-width: 560px; margin: 0 auto; line-height: 1.6; color: #1f2937">
-        <p>Oi! Recebemos seu pedido pra entrar na lista de espera do <strong>Alerta de Convocação</strong>.</p>
+        <p>Oi! Recebemos seu pedido pra entrar na lista de espera do <strong>Oxty Inside</strong>.</p>
         <p>Falta só um clique pra confirmar seu e-mail:</p>
         <p style="text-align: center; margin: 32px 0">
-          <a href="${confirmUrl}" style="background: #16a34a; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600">Confirmar meu e-mail</a>
+          <a href="${confirmUrl}" style="background: #0a1f66; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600">Confirmar meu e-mail</a>
         </p>
         <p style="color: #6b7280; font-size: 14px">Se não foi você, pode ignorar este e-mail.</p>
       </div>

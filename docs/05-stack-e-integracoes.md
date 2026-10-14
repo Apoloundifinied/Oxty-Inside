@@ -3,7 +3,7 @@
 > Contratos descritos em prosa/tabelas. O agente implementador lê isto + a doc oficial do serviço no dia da implementação.
 
 ## Stack travada
-Next.js (App Router, TS strict) · Tailwind · Supabase (Auth, Postgres, RLS) · Vercel (host + Cron) · **AbacatePay** · Resend · Telegram Bot API · Cloudflare Turnstile · Zod · Vitest · Playwright. (Detalhes da cobrança: `07-monetizacao-abacatepay.md`.)
+Next.js (App Router, TS strict) · Tailwind · Supabase (Auth, Postgres, RLS) · Vercel (host + Cron) · **Cakto** (ADR-012) · Resend · Cloudflare Turnstile · Zod · Vitest · Playwright. (Detalhes da cobrança: `07-monetizacao-cakto.md`. Telegram Bot API fora do MVP — ADR-013.)
 
 ## 1. Querido Diário (`lib/ingestion/queridodiario` — ÚNICO ponto de acesso)
 Base: `https://api.queridodiario.org.br` — OpenAPI em `/openapi.json`. Leitura sem auth.
@@ -23,14 +23,15 @@ Base: `https://api.queridodiario.org.br` — OpenAPI em `/openapi.json`. Leitura
 6. **Atribuição:** link para Querido Diário no rodapé (boa relação com a OKBR + transparência).
 
 ### Estado de cobertura (sync)
-- Tabela/vista de territórios cobertos = sync semanal do `/cities` (cron separado), gravando `territory_id`, nome, UF, level. Tela `/cobertura` e o autocomplete leem **essa cópia local**, não a API ao vivo (latência + gentileza com a API).
+- Copia local = sync semanal do `/cities` (cron separado), gravando `territory_id`, nome, UF, level — **todas as 5.570 cidades**, não só as cobertas: level 0 vira sinal de demanda no widget ("ainda não cobrimos X"). Coberto = `level ≥ 1`. Tela `/cobertura` e o autocomplete leem **essa cópia local**, não a API ao vivo (latência + gentileza com a API). Achado 2026-10: **`/cities` ignora `offset`** e devolve tudo numa página.
 
 ## 2. Resend (e-mail)
 - API REST direta (sem SDK, padrão Dozena): post de `{from, to, subject, html}` com `RESEND_API_KEY`.
 - Templates PT-BR listados no doc 03 §8.
 - E-mail de **confirmação de waitlist** é obrigatório (double opt-in — qualidade da lista + reputação do remetente).
 
-## 3. Telegram Bot
+## 3. ~~Telegram Bot~~ (fora do MVP — ADR-013; candidato Fase 2+)
+Alertas do MVP são **só por e-mail** (Resend). Se a comunidade pedir Telegram depois:
 - Criar bot via BotFather; token em `TELEGRAM_BOT_TOKEN`.
 - Vínculo: usuário logado gera link `t.me/<bot>?start=<token-opaco>`; webhook/endpoint `/app/api/telegram` recebe `/start <token>` e grava `telegram_chat_id` em `profiles`.
 - Envio: `sendMessage` simples com excerpt + botão inline com o `pdf_url`.
@@ -44,4 +45,5 @@ Base: `https://api.queridodiario.org.br` — OpenAPI em `/openapi.json`. Leitura
 - Rotas protegidas por `CRON_SECRET` (header Authorization).
 
 ## 6. Env vars (criar `.env.example` com esta lista)
-`NEXT_PUBLIC_SUPABASE_URL` · `NEXT_PUBLIC_SUPABASE_ANON_KEY` · `SUPABASE_SERVICE_ROLE_KEY` · `RESEND_API_KEY` · `EMAIL_FROM` · `TELEGRAM_BOT_TOKEN` · `NEXT_PUBLIC_TURNSTILE_SITE_KEY` · `TURNSTILE_SECRET_KEY` · `ABACATEPAY_API_KEY` · `ABACATEPAY_WEBHOOK_SECRET` · `CRON_SECRET` · `NEXT_PUBLIC_SITE_URL`
+`NEXT_PUBLIC_SUPABASE_URL` · `NEXT_PUBLIC_SUPABASE_ANON_KEY` · `SUPABASE_SERVICE_ROLE_KEY` · `RESEND_API_KEY` · `EMAIL_FROM` · `NEXT_PUBLIC_TURNSTILE_SITE_KEY` · `TURNSTILE_SECRET_KEY` · `CAKTO_API_KEY` · `CAKTO_WEBHOOK_SECRET` · `CRON_SECRET` · `NEXT_PUBLIC_SITE_URL`
+(`TELEGRAM_BOT_TOKEN` só quando a Fase 2+ reintroduzir o canal — ADR-013.)

@@ -10,18 +10,18 @@
 4. **PT-BR em toda interface, copy e e-mails.** Código e comentários em inglês, como de costume.
 
 ## 2. Stack travada (não inventar)
-Next.js App Router + TS strict · Tailwind · Supabase (Auth/Postgres/RLS) · Vercel + Cron · **AbacatePay** · Resend · Telegram Bot API · Cloudflare Turnstile · Zod · Vitest · Playwright.
+Next.js App Router + TS strict · Tailwind · Supabase (Auth/Postgres/RLS) · Vercel + Cron · **Cakto** (ADR-012) · Resend · Cloudflare Turnstile · Zod · Vitest · Playwright. (Telegram Bot API saiu do MVP — ADR-013.)
 - Nenhuma IA/LLM no produto.
 - Nenhum scraping próprio: **toda leitura de diários passa pelo adapter `lib/ingestion/queridodiario`** — único ponto de contato com a API externa.
-- Nenhum gateway de pagamento alternativo sem ADR (AbacatePay é travado; ver `docs/07`).
+- Nenhum gateway de pagamento alternativo sem ADR (Cakto é travado; ver `docs/07`).
 
 ## 3. Regras de implementação
 - **Querido Diário:** seguir `docs/05-stack-e-integracoes.md`. Nunca query com o nome completo entre aspas; sempre 2–4 termos fortes; sempre paginar (`offset`/`size`, total capa em 10.000); tratar timeout como "retry depois", nunca falha fatal do job.
 - **Dados sensíveis:** CPF apenas **parcial** (3 primeiros + 2 últimos dígitos). Qualquer campo novo com dado pessoal precisa de atualização em `docs/09-lgpd-e-seguranca.md`.
-- **E-mails:** Resend via API REST; templates PT-BR; toda notificação tem versão Telegram equivalente.
+- **E-mails:** Resend via API REST; templates PT-BR; e-mail é o canal de entrega do MVP (ADR-013).
 - **Anti-bot:** todo formulário público (waitlist, cadastro) exige Turnstile.
 - **Testes:** toda regra de negócio (matching, dedup, elegibilidade de plano) com teste Vitest; fluxo waitlist→confirmação com teste Playwright.
-- **Webhooks AbacatePay:** idempotentes (chave = id do evento), assinatura verificada, handler em `app/api/webhooks/`.
+- **Webhooks Cakto:** idempotentes (chave = id do evento), assinatura verificada, handler em `app/api/webhooks/`.
 
 ## 4. Regras de comunicação externa (aprendidas com a Dozena)
 - **Voz humana, sempre.** Proibido "tricolon" (três frases paralelas curtas), proibido texto com cara de IA em posts de comunidade. Ver `docs/08-canais-e-voz.md`.
@@ -30,7 +30,7 @@ Next.js App Router + TS strict · Tailwind · Supabase (Auth/Postgres/RLS) · Ve
 
 ## 5. Definição de pronto (DoD) por fase
 - **Fase 0 pronta:** landing no ar em produção, waitlist salvando com Turnstile + e-mail de confirmação, analítico gravando, smoke test manual documentado.
-- **MVP pronto:** usuário real consegue pagar via AbacatePay (PIX), cadastrar watchlist, e receber (ou não) alerta no dia seguinte — tudo verificável em produção.
+- **MVP pronto:** usuário real consegue pagar via Cakto (PIX), cadastrar watchlist, e receber (ou não) alerta no dia seguinte — tudo verificável em produção.
 - Em ambos: build verde, `vitest` verde, migration aplicada em produção, `CONTEXT.md` §12 atualizado.
 
 ## 6. Estado e sessões

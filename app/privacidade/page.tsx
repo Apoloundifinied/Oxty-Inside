@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Privacidade — Alerta de Convocação" };
+export const metadata: Metadata = { title: "Privacidade — Oxty Inside" };
 
 export default function PrivacidadePage() {
   return (

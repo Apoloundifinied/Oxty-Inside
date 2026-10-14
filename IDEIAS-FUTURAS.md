@@ -3,6 +3,7 @@
 > Regra (ADR-009): depois do MVP, **uma feature por vez**, escolhida por votação da comunidade (canal de requests + voto). Nada aqui é promessa.
 
 ## Candidatas já levantadas
+0. **Telegram como canal de alerta (ADR-013)** — foi tirado do MVP; é o candidato mais natural a voltar por votação (bot + vínculo por token já especificados em `docs/05` §3).
 1. **Cobertura complementar estadual** — hoje só municípios via Querido Diário. Adicionar Diários Oficiais estaduais (SP/MG/RS primeiro) se a comunidade pedir.
 2. **Watchlists ilimitadas** + múltiplos concursos simultâneos (TRT + TRE etc.).
 3. **Trial 7 dias** sem cartão.

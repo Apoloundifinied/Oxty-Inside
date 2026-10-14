@@ -6,14 +6,14 @@ import { test, expect } from "@playwright/test";
 test("landing carrega com hero, widget de cidade e formulario de waitlist", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /Passou no concurso/i })).toBeVisible();
-  await expect(page.getByLabel(/monitoramos a sua cidade/i)).toBeVisible();
+  await expect(page.getByPlaceholder("Digite o município").first()).toBeVisible();
   await expect(page.getByRole("button", { name: /Quero ser avisado/i }).first()).toBeVisible();
 });
 
 test("inscricao na waitlist mostra mensagem de confirmacao", async ({ page }) => {
   await page.goto("/");
   const email = `e2e-${Date.now()}@exemplo.com`;
-  await page.getByPlaceholder("seu@email.com").first().fill(email);
+  await page.getByPlaceholder("voce@email.com").first().fill(email);
   await page.getByRole("button", { name: /Quero ser avisado/i }).first().click();
   await expect(page.getByText(/e-mail de confirma|já está na lista/i).first()).toBeVisible();
 });

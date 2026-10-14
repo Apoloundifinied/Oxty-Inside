@@ -25,7 +25,10 @@ export interface QDGazette {
   power?: string;
 }
 
-async function get<T>(path: string, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<T> {
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// Timeout/429 nunca sao falha fatal: retry com backoff simples, max 2 (doc 05 §1.4).
+async function get<T>(path: string, timeoutMs = DEFAULT_TIMEOUT_MS, attempt = 0): Promise<T> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
@@ -33,8 +36,21 @@ async function get<T>(path: string, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<T> 
       signal: ctrl.signal,
       headers: { accept: "application/json" },
     });
+    if (res.status === 429 || res.status >= 500) {
+      if (attempt < 2) {
+        await sleep(1_500 * (attempt + 1));
+        return get(path, timeoutMs, attempt + 1);
+      }
+      throw new Error(`QueridoDiario ${path} -> HTTP ${res.status} (apos retries)`);
+    }
     if (!res.ok) throw new Error(`QueridoDiario ${path} -> HTTP ${res.status}`);
     return (await res.json()) as T;
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError" && attempt < 2) {
+      await sleep(1_500 * (attempt + 1));
+      return get(path, timeoutMs, attempt + 1);
+    }
+    throw err;
   } finally {
     clearTimeout(timer);
   }
@@ -62,7 +78,10 @@ export async function fetchAllCities(): Promise<QDCity[]> {
     const data = await get<CitiesPage>(`/cities?size=${size}&offset=${offset}`);
     const cities = data.cities ?? [];
     all.push(...cities);
-    if (cities.length < size) break;
+    // /cities pode ignorar offset e devolver tudo de uma vez: so pagina se veio
+    // exatamente `size` (evita loop infinito — observado 2026-10).
+    if (cities.length !== size) break;
+    await new Promise((r) => setTimeout(r, 400)); // gentileza com a API publica
   }
   return all;
 }

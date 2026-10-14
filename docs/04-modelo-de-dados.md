@@ -26,10 +26,10 @@
 |---|---|
 | `id` | = `auth.users.id` |
 | `email` | denormalizado para suporte |
-| `telegram_chat_id` | null até vincular via `/start` com token |
+| `telegram_chat_id` | **Fase 2+** (ADR-013): null até vincular via `/start` com token |
 | `plan` | `none` / `monthly` / `annual` |
-| `subscription_status` | `active` / `past_due` / `canceled` — espelho do webhook AbacatePay |
-| `abacatepay_customer_id` / `abacatepay_subscription_id` | referências do gateway |
+| `subscription_status` | `active` / `past_due` / `canceled` — espelho do webhook Cakto (ADR-012) |
+| `cakto_customer_id` / `cakto_subscription_id` | referências do gateway |
 
 ### `watchlists` (máx. 3/usuário, enforced no server)
 | `user_id`, `full_name` (como sai no diário), `cpf_partial` (formato `123.**.***-45` ou equivalente — ver docs/09), `organ` text, `territory_ids text[]` (1–3), `active bool` |
@@ -42,7 +42,7 @@
 - `dedup_hash` = SHA-256(`territory_id` + `gazette_date` + `edition` + excerpt normalizado). Unique index = dedup físico.
 
 ### `payment_events` (auditoria do gateway)
-| `user_id`, `abacatepay_event_id unique` (idempotência), `kind`, `payload jsonb` |
+| `user_id`, `cakto_event_id unique` (idempotência — ADR-012), `kind`, `payload jsonb` |
 
 ### `scan_runs` (observabilidade do job)
 | `started_at`, `finished_at`, `watchlists_scanned int`, `api_calls int`, `matches_found int`, `errors jsonb` |

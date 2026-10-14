@@ -35,10 +35,10 @@ O espaço vazio: **pós-aprovação, nível municipal, individualizado, barato.*
 
 ## 4. Jornada resumida do usuário
 1. Descobre o produto (Reddit/WhatsApp/indicação) → landing → confere "O que cobrimos".
-2. Fase 0: entra na waitlist. Fase 1: assina (PIX, AbacatePay).
+2. Fase 0: entra na waitlist. Fase 1: assina (PIX, Cakto — ADR-012).
 3. Cadastra watchlist: nome como sai no diário, CPF parcial, município(s), órgão.
 4. Passa dias/semanas sem notícia (isso é o sistema funcionando — comunicado no resumo semanal, Fase 2).
-5. Um dia: **alerta no Telegram às 7h com o trecho da nomeação dele**, data e link do PDF oficial.
+5. Um dia: **alerta no e-mail às 7h com o trecho da nomeação dele** (ADR-013), data e link do PDF oficial.
 6. Ele toma posse, cancela a assinatura feliz, e indica para os amigos da fila. (Churn positivo — registrar no marketing.)
 
 ## 5. Linguagem do público (usar nestas palavras, não em jargão técnico)

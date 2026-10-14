@@ -24,9 +24,14 @@ export async function GET(req: NextRequest) {
   const db = getServiceClient();
   if (!db) return NextResponse.json({ error: "supabase nao configurado" }, { status: 500 });
 
-  // upsert em lotes; somente level >= 1 (tem fonte de dados, doc 05)
+  // upsert em lotes; TODAS as cidades (level 0 = nao coberta; vira demanda no widget)
+  const seen = new Set<string>();
   const rows = cities
-    .filter((c) => Number(c.level) >= 1 && /^\d{7}$/.test(c.territory_id))
+    .filter((c) => {
+      if (!/^\d{7}$/.test(c.territory_id) || seen.has(c.territory_id)) return false;
+      seen.add(c.territory_id);
+      return true;
+    })
     .map((c) => ({
       territory_id: c.territory_id,
       name: c.territory_name,
