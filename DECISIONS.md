@@ -1,0 +1,15 @@
+# DECISIONS.md — Registro de decisões (ADR)
+
+> Nunca editar uma decisão travada por trás do pano: criar ADR nova que a substitui.
+
+- **ADR-001 · 2026-10-13 · Modelo de receita:** SaaS low ticket pago — R$ 9,90/mês ou **R$ 49/ano (plenamente recomendado; quem espera nomeação espera anos)**. Motivo: willingness-to-pay evidente (dor com sine jurisprudencial); low ticket reduz fricção. Status: travada.
+- **ADR-002 · 2026-10-13 · Fonte de dados:** API do **Querido Diário** como única fonte na Fase 1. Sem scraping próprio, sem IA/LLM. O full-text da própria API (`querystring` + excerpts) substitui `ts_vector` nesta fase. Auditoria 2026-10-13: gate passou (CONTEXT §7). Plano B documentado: self-host (projeto open source). Status: travada.
+- **ADR-003 · 2026-10-13 · Alertas:** e-mail (Resend) + Telegram Bot. Telegram é o canal natural do público concurseiro. Sem push, sem app móvel, sem WhatsApp Business API (custo/burocracia não compensam no low ticket). Status: travada.
+- **ADR-004 · 2026-10-13 · Cobertura:** somente os municípios que a API cobrir (~800 hoje), **declarados com transparência** em página pública "O que cobrimos" e no fluxo de cadastro. Nunca prometer Brasil inteiro. Status: travada.
+- **ADR-005 · 2026-10-13 · Público:** concurseiro pós-prova / aprovado aguardando nomeação / cadastro de reserva. Não abrir para "monitoramento genérico de diários" no MVP. Status: travada.
+- **ADR-006 · 2026-10-13 · Gateway de pagamento:** **AbacatePay** exclusivo. Motivos: taxas baixas adequadas a low ticket, PIX nativo (público alvo vive de PIX), checkout hospedado simples e webhooks. Não usar Stripe/Mercado Pago nesta fase. Status: travada.
+- **ADR-007 · 2026-10-13 · Ordem de construção:** **Fase 0 = landing + waitlist antes do MVP.** Só construir o produto se a waitlist atingir o piso do CONTEXT §11. Motivo: demanda é o risco real que restou após a auditoria técnica. Status: travada.
+- **ADR-008 · 2026-10-13 · Distribuição:** Reddit (subs BR de concursos, com voz humana, respeitando regras de autopromoção de cada sub) + grupos de WhatsApp/Telegram de concurseiros + indicação. Sem ads pagos no início. Lição importada da Dozena: post com "cara de IA" é zoado e removido. Status: travada.
+- **ADR-009 · 2026-10-13 · Evolução:** pós-MVP = **um passo por vez, guiado pela comunidade** (requests votadas). Sem roadmap longo-prometido. Status: travada.
+- **ADR-010 · 2026-10-13 · Idioma e código:** interface/copy PT-BR apenas; repositório **fechado** (não é open source, diferente da Dozena). Status: travada.
+- **ADR-011 · 2026-10-13 · Dado sensível:** CPF coletado apenas **parcial** (3 primeiros + 2 últimos dígitos), suficiente para matching no formato publicado pelos diários. Política detalhada em `docs/09`. Status: travada.
